@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     Button button;
     TextView textView;
     String city;
+    ImageView image ;
     private List<Weather> weatherList = new ArrayList<>();
     private WeatherArrayAdapter adapter;
     private ListView listView;
@@ -44,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new WeatherArrayAdapter(this, weatherList);
         listView.setAdapter(adapter);
 
-        button = (Button) findViewById(R.id.buttonweather);
-        button.setOnClickListener(new View.OnClickListener() {
+        image = (ImageView)findViewById(R.id.buttonweather);
+        image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 editText = (EditText) findViewById(R.id.editweather);
@@ -58,9 +60,27 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Snackbar.make(findViewById(R.id.action_container), R.string.invalid_url, Snackbar.LENGTH_LONG).show();
                 }
-
             }
         });
+      //  button = (Button) findViewById(R.id.buttonweather);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                editText = (EditText) findViewById(R.id.editweather);
+//                URL url = createUrl(editText.getText().toString());
+//                if (url != null) {
+//                    dimisskeyboard(editText);
+//                    GetWeatherTask getweather = new GetWeatherTask();
+//                    getweather.execute(url);
+//
+//                } else {
+//                    Snackbar.make(findViewById(R.id.action_container), R.string.invalid_url, Snackbar.LENGTH_LONG).show();
+//                }
+//
+//            }
+//        });
+
+
 
 
     }

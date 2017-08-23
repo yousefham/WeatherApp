@@ -20,12 +20,13 @@
             android:drawableStart="@drawable/ic_add_location_pink_a200_24dp"
             android:hint="  Add your country" />
 
-        <Button
+        <ImageView
             android:id="@+id/buttonweather"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
-            android:background="@drawable/button" />
+            android:src="@drawable/plus_circle"
+            />
     </RelativeLayout>
 
     <ListView
