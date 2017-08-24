@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -12,6 +13,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         final String key = "f4acb164b5acc4b7b77a48ad4ceee13c";
         listView = (ListView) findViewById(R.id.listview);
         adapter = new WeatherArrayAdapter(this, weatherList);
-        listView.setAdapter(adapter);
+
 
         image = (ImageView)findViewById(R.id.buttonweather);
         image.setOnClickListener(new View.OnClickListener() {
@@ -54,8 +60,26 @@ public class MainActivity extends AppCompatActivity {
                 URL url = createUrl(editText.getText().toString());
                 if (url != null) {
                     dimisskeyboard(editText);
-                    GetWeatherTask getweather = new GetWeatherTask();
-                    getweather.execute(url);
+                 //   GetWeatherTask getweather = new GetWeatherTask();
+                  //  getweather.execute(url);
+
+                    JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.toString(), null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    convertJSONToArrayList(response);
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                }
+                            }
+                    ) ;
+
+
+                    MyVollySingleton.getInstance(MainActivity.this).AddToRequestQue(request);
 
                 } else {
                     Snackbar.make(findViewById(R.id.action_container), R.string.invalid_url, Snackbar.LENGTH_LONG).show();
@@ -82,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+        listView.setAdapter(adapter);
     }
 
     private void dimisskeyboard(View view) {
@@ -96,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         try {
 
             String urlString = baseurl + URLEncoder.encode(City, "UTF-8") + "&units=imperial&cnt=16&APPID=" + apikey;
+            Log.d("arr",urlString);
             return new URL(urlString);
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,8 +175,8 @@ public class MainActivity extends AppCompatActivity {
         weatherList.clear();
         try {
             JSONArray list = json.getJSONArray("list");
-
-            for (int i = 0; i < list.length(); i++) {
+            System.out.println(list);
+             for (int i = 0; i < list.length(); i++) {
                 JSONObject day = list.getJSONObject(i);
 
                 JSONObject temp = day.getJSONObject("temp");
@@ -161,12 +186,13 @@ public class MainActivity extends AppCompatActivity {
                 weatherList.add(new Weather(
                         day.getLong("dt"),
                         temp.getDouble("min"),
-                        temp.getDouble("mix"),
+                        temp.getDouble("max"),
                         day.getDouble("humidity"),
                         weather.getString("description"),
                         weather.getString("icon")));
+                        }
 
-            }
+
 
         } catch (JSONException jse) {
             jse.printStackTrace();
